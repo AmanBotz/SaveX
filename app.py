@@ -7,7 +7,7 @@ app = Flask(__name__)
 def home():
     return """
     <center>
-       <p>Bot is live <p/>
+        <p> Bot is live <p/>
     </center>
     <style>
         body {
