@@ -106,6 +106,10 @@ async def batch_link(_, message):
             "You already have a batch process running. Please wait for it to complete before starting a new one."
         )
         return
+    freecheck = await chk_user(message, user_id)
+    if freecheck == 1 and FREEMIUM_LIMIT == 0 and user_id not in OWNER_ID:
+        await message.reply("Freemium service is currently not available. Upgrade to premium for access.")
+        return    
     toker = await is_user_verified(user_id)
     if toker:
         max_batch_size = (FREEMIUM_LIMIT + 20)
@@ -116,6 +120,7 @@ async def batch_link(_, message):
             max_batch_size = FREEMIUM_LIMIT
         else:
             max_batch_size = PREMIUM_LIMIT
+    
     while True:
         start = await app.ask(message.chat.id, text="Please send the start link.")
         start_id = start.text.strip()
@@ -256,4 +261,4 @@ async def stop_batch(_, message):
         await app.send_message(
             message.chat.id, 
             "No active batch processing is running to cancel."
-        )
+    )
