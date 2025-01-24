@@ -1,11 +1,22 @@
-#devggn
-
+# ---------------------------------------------------
+# File Name: login.py
+# Description: A Pyrogram bot for downloading files from Telegram channels or groups 
+#              and uploading them back to Telegram.
+# Author: Gagan
+# GitHub: https://github.com/devgaganin/
+# Telegram: https://t.me/team_spy_pro
+# YouTube: https://youtube.com/@dev_gagan
+# Created: 2025-01-11
+# Last Modified: 2025-01-11
+# Version: 2.0.5
+# License: MIT License
+# ---------------------------------------------------
 
 from pyrogram import filters, Client
 from devgagan import app
-from pyromod import listen
 import random
 import os
+import asyncio
 import string
 from devgagan.core.mongo import db
 from devgagan.core.func import subscribe, chk_user
@@ -39,7 +50,7 @@ async def delete_session_files(user_id):
 
     # Delete session from the database
     if session_file_exists or memory_file_exists:
-        await db.delete_session(user_id)
+        await db.remove_session(user_id)
         return True  # Files were deleted
     return False  # No files found
 

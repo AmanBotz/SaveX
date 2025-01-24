@@ -1,21 +1,35 @@
+# ---------------------------------------------------
+# File Name: start.py
+# Description: A Pyrogram bot for downloading files from Telegram channels or groups 
+#              and uploading them back to Telegram.
+# Author: Gagan
+# GitHub: https://github.com/devgaganin/
+# Telegram: https://t.me/team_spy_pro
+# YouTube: https://youtube.com/@dev_gagan
+# Created: 2025-01-11
+# Last Modified: 2025-01-11
+# Version: 2.0.5
+# License: MIT License
+# ---------------------------------------------------
+
 from pyrogram import filters
 from devgagan import app
 from config import OWNER_ID
 from devgagan.core.func import subscribe
 import asyncio
+from devgagan.core.func import *
 from pyrogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.raw.functions.bots import SetBotInfo
 from pyrogram.raw.types import InputUserSelf
-# ------------------- Start-Buttons ------------------- #
 
 from pyrogram.types import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup
-# Set bot commands in one place
+ 
 @app.on_message(filters.command("set"))
 async def set(_, message):
     if message.from_user.id not in OWNER_ID:
         await message.reply("You are not authorized to use this command.")
         return
-    # Setting all the bot commands
+     
     await app.set_bot_commands([
         BotCommand("start", "🚀 Start the bot"),
         BotCommand("batch", "🫠 Extract in bulk"),
@@ -24,10 +38,14 @@ async def set(_, message):
         BotCommand("token", "🎲 Get 3 hours free access"),
         BotCommand("adl", "👻 Download audio from 30+ sites"),
         BotCommand("dl", "💀 Download videos from 30+ sites"),
+        BotCommand("freez", "🧊 Remove all expired user"),
+        BotCommand("pay", "₹ Pay now to get subscription"),
+        BotCommand("status", "⟳ Refresh Payment status"),
         BotCommand("transfer", "💘 Gift premium to others"),
         BotCommand("myplan", "⌛ Get your plan details"),
         BotCommand("add", "➕ Add user to premium"),
         BotCommand("rem", "➖ Remove from premium"),
+        BotCommand("session", "🧵 Generate Pyrogramv2 session"),
         BotCommand("settings", "⚙️ Personalize things"),
         BotCommand("stats", "📊 Get stats of the bot"),
         BotCommand("plan", "🗓️ Check our premium plans"),
@@ -39,12 +57,12 @@ async def set(_, message):
         BotCommand("help", "❓ If you're a noob, still!"),
         BotCommand("cancel", "🚫 Cancel batch process")
     ])
-    
+ 
     await message.reply("✅ Commands configured successfully!")
-
-# Function to split and manage the help message in multiple parts
-
-# Function to split and manage the help message in multiple parts
+ 
+ 
+ 
+ 
 help_pages = [
     (
         "📝 **Bot Commands Overview (1/2)**:\n\n"
@@ -95,74 +113,74 @@ help_pages = [
         "**__Powered by Team SPY__**"
     )
 ]
-
-# Helper function to send or edit help messages with navigation buttons
+ 
+ 
 async def send_or_edit_help_page(_, message, page_number):
     if page_number < 0 or page_number >= len(help_pages):
         return
-
-    # Define the navigation buttons (previous, next)
+ 
+     
     prev_button = InlineKeyboardButton("◀️ Previous", callback_data=f"help_prev_{page_number}")
     next_button = InlineKeyboardButton("Next ▶️", callback_data=f"help_next_{page_number}")
-
-    # Add buttons conditionally
+ 
+     
     buttons = []
     if page_number > 0:
         buttons.append(prev_button)
     if page_number < len(help_pages) - 1:
         buttons.append(next_button)
-
-    # Create the keyboard
+ 
+     
     keyboard = InlineKeyboardMarkup([buttons])
-
-    # Delete the previous message before sending a new one
+ 
+     
     await message.delete()
-
-    # Send the appropriate help page
+ 
+     
     await message.reply(
         help_pages[page_number],
         reply_markup=keyboard
     )
-
-# Start command with help navigation
+ 
+ 
 @app.on_message(filters.command("help"))
 async def help(client, message):
     join = await subscribe(client, message)
     if join == 1:
         return
-    
-    # Show the first help page
+ 
+     
     await send_or_edit_help_page(client, message, 0)
-
-# Handle callback queries for help navigation
+ 
+ 
 @app.on_callback_query(filters.regex(r"help_(prev|next)_(\d+)"))
 async def on_help_navigation(client, callback_query):
     action, page_number = callback_query.data.split("_")[1], int(callback_query.data.split("_")[2])
-
+ 
     if action == "prev":
         page_number -= 1
     elif action == "next":
         page_number += 1
-
-    # Edit the appropriate help page
+ 
+     
     await send_or_edit_help_page(client, callback_query.message, page_number)
-
-    # Acknowledge the callback query
+ 
+     
     await callback_query.answer()
-
-
+ 
+ 
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-
+ 
 @app.on_message(filters.command("terms") & filters.private)
 async def terms(client, message):
     terms_text = (
-        "📜 **Terms and Conditions** 📜\n\n"
+        "> 📜 **Terms and Conditions** 📜\n\n"
         "✨ We are not responsible for user deeds, and we do not promote copyrighted content. If any user engages in such activities, it is solely their responsibility.\n"
         "✨ Upon purchase, we do not guarantee the uptime, downtime, or the validity of the plan. __Authorization and banning of users are at our discretion; we reserve the right to ban or authorize users at any time.__\n"
         "✨ Payment to us **__does not guarantee__** authorization for the /batch command. All decisions regarding authorization are made at our discretion and mood.\n"
     )
-    # Buttons for "See Plans" and "Contact"
+     
     buttons = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton("📋 See Plans", callback_data="see_plan")],
@@ -170,18 +188,18 @@ async def terms(client, message):
         ]
     )
     await message.reply_text(terms_text, reply_markup=buttons)
-
-
+ 
+ 
 @app.on_message(filters.command("plan") & filters.private)
 async def plan(client, message):
     plan_text = (
-        "💰 **Premium Price**: Starting from $2 or 200 INR accepted via **__Amazon Gift Card__** (terms and conditions apply).\n"
+        "> 💰 **Premium Price**:\n\n Starting from $2 or 200 INR accepted via **__Amazon Gift Card__** (terms and conditions apply).\n"
         "📥 **Download Limit**: Users can download up to 100,000 files in a single batch command.\n"
         "🛑 **Batch**: You will get two modes /bulk and /batch.\n"
         "   - Users are advised to wait for the process to automatically cancel before proceeding with any downloads or uploads.\n\n"
         "📜 **Terms and Conditions**: For further details and complete terms and conditions, please send /terms.\n"
     )
-    # Buttons for "See Terms" and "Contact"
+     
     buttons = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton("📜 See Terms", callback_data="see_terms")],
@@ -189,18 +207,18 @@ async def plan(client, message):
         ]
     )
     await message.reply_text(plan_text, reply_markup=buttons)
-
-
+ 
+ 
 @app.on_callback_query(filters.regex("see_plan"))
 async def see_plan(client, callback_query):
     plan_text = (
-        "💰 **Premium Price**: Starting from $2 or 200 INR accepted via **__Amazon Gift Card__** (terms and conditions apply).\n"
+        "> 💰**Premium Price**\n\n Starting from $2 or 200 INR accepted via **__Amazon Gift Card__** (terms and conditions apply).\n"
         "📥 **Download Limit**: Users can download up to 100,000 files in a single batch command.\n"
         "🛑 **Batch**: You will get two modes /bulk and /batch.\n"
         "   - Users are advised to wait for the process to automatically cancel before proceeding with any downloads or uploads.\n\n"
         "📜 **Terms and Conditions**: For further details and complete terms and conditions, please send /terms or click See Terms👇\n"
     )
-    # Buttons for "See Terms" and "Contact"
+     
     buttons = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton("📜 See Terms", callback_data="see_terms")],
@@ -208,17 +226,17 @@ async def see_plan(client, callback_query):
         ]
     )
     await callback_query.message.edit_text(plan_text, reply_markup=buttons)
-
-
+ 
+ 
 @app.on_callback_query(filters.regex("see_terms"))
 async def see_terms(client, callback_query):
     terms_text = (
-        "📜 **Terms and Conditions** 📜\n\n"
+        "> 📜 **Terms and Conditions** 📜\n\n"
         "✨ We are not responsible for user deeds, and we do not promote copyrighted content. If any user engages in such activities, it is solely their responsibility.\n"
         "✨ Upon purchase, we do not guarantee the uptime, downtime, or the validity of the plan. __Authorization and banning of users are at our discretion; we reserve the right to ban or authorize users at any time.__\n"
         "✨ Payment to us **__does not guarantee__** authorization for the /batch command. All decisions regarding authorization are made at our discretion and mood.\n"
     )
-    # Buttons for "See Plans" and "Contact"
+     
     buttons = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton("📋 See Plans", callback_data="see_plan")],
@@ -226,4 +244,5 @@ async def see_terms(client, callback_query):
         ]
     )
     await callback_query.message.edit_text(terms_text, reply_markup=buttons)
-    
+ 
+ 
