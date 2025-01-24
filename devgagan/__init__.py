@@ -1,41 +1,46 @@
-#devggn
+# ---------------------------------------------------
+# File Name: __init__.py
+# Description: A Pyrogram bot for downloading files from Telegram channels or groups 
+#              and uploading them back to Telegram.
+# Author: Gagan
+# GitHub: https://github.com/devgaganin/
+# Telegram: https://t.me/team_spy_pro
+# YouTube: https://youtube.com/@dev_gagan
+# Created: 2025-01-11
+# Last Modified: 2025-01-11
+# Version: 2.0.5
+# License: MIT License
+# ---------------------------------------------------
+
 import asyncio
 import logging
-import time
-from pyromod import listen
 from pyrogram import Client
 from config import API_ID, API_HASH, BOT_TOKEN, STRING, MONGO_DB
 from telethon.sync import TelegramClient
 from motor.motor_asyncio import AsyncIOMotorClient
+import time
 
 loop = asyncio.get_event_loop()
+
 logging.basicConfig(
     format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s",
     level=logging.INFO,
 )
+
+botStartTime = time.time()
 
 app = Client(
     ":RestrictBot:",
     api_id=API_ID,
     api_hash=API_HASH,
     bot_token=BOT_TOKEN,
-    workers=10
+    workers=50
 )
 
-botStartTime = time.time()
 pro = Client("ggbot", api_id=API_ID, api_hash=API_HASH, session_string=STRING)
+
 sex = TelegramClient('sexrepo', API_ID, API_HASH).start(bot_token=BOT_TOKEN)
 
-async def auto_ping():
-    while True:
-        try:
-            # Fetch bot details every time auto_ping runs
-            getme = await app.get_me()  # Fetch bot profile
-            print(f"Bot details: {getme.first_name} (@{getme.username})")
-        except Exception as e:
-            print(f"Error during auto ping: {e}")
-
-        await asyncio.sleep(60)
 
 # MongoDB setup
 tclient = AsyncIOMotorClient(MONGO_DB)
@@ -66,8 +71,5 @@ async def restrict_bot():
         BOT_NAME = getme.first_name
     if STRING:
         await pro.start()
-
-    asyncio.create_task(auto_ping())
-
 
 loop.run_until_complete(restrict_bot())
